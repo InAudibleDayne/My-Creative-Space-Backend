@@ -100,6 +100,13 @@ def get_recent_blogs():
 
   return jsonify(result)
 
+@app.route('/blogs/<offset>', methods=["GET"])
+def get_next_blogs(offset):
+  next_blogs = Blogs.query.order_by(Blogs.id.desc()).limit(10).offset(offset).all()
+  result = blogs_schema.dump(next_blogs)
+
+  return jsonify(result)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
