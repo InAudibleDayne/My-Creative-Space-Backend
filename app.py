@@ -7,7 +7,7 @@ from sqlalchemy.dialects.mysql import SET, DATETIME
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://master:Pokemon.Master151@mycreativespace.c0njelfcvvxq.us-east-1.rds.amazonaws.com:3306/My_Creative_Space'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://master:Pokemon.Master151@localhost:3306/my_creative_space?auth_plugin=mysql_native_password'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -28,21 +28,23 @@ class UserSchema(ma.Schema):
 class Blogs(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   title = db.Column(db.String(45), unique=False)
-  description = db.Column(db.String(45), unique=False)
+  description = db.Column(db.String(160), unique=False)
   blog_type = db.Column(db.String(8), unique=False)
   file_location = db.Column(db.String(160), unique=False)
+  file_blob = db.Column(db.LargeBinary, unique=False)
   created_by_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=False, nullable=False)
   
-  def __init__(self, title, description, blog_type, file_location, created_by_id):
+  def __init__(self, title, description, blog_type, file_location, file_blob, created_by_id):
     self.title = title
     self.description = description
     self.blog_type = blog_type
     self.file_location = file_location
+    self.file_blob = file_blob
     self.created_by_id = created_by_id
 
 class BlogSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'title', 'description', 'blog_type', 'file_location', 'created_by_id')
+    fields = ('id', 'title', 'description', 'blog_type', 'file_location', 'file_blob', 'created_by_id')
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -82,9 +84,10 @@ def add_blog():
   description = request.json['description']
   blog_type = request.json['blog_type']
   file_location = request.json['file_location']
+  file_blob = str.encode(request.json['file_blob'])
   created_by_id = request.json['created_by']
 
-  new_blog = Blogs(title, description, blog_type, file_location, created_by_id)
+  new_blog = Blogs(title, description, blog_type, file_location, file_blob, created_by_id)
 
   db.session.add(new_blog)
   db.session.commit()
