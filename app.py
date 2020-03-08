@@ -127,6 +127,11 @@ def get_next_blogs(offset):
 
   return jsonify(result)
 
+@app.route('/blog/<id>', methods=["GET"])
+def get_blog(id):
+  blog = Blogs.query.get(id)
+  return blog_schema.jsonify(blog)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
