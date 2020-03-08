@@ -132,6 +132,27 @@ def get_blog(id):
   blog = Blogs.query.get(id)
   return blog_schema.jsonify(blog)
 
+@app.route('/blog/<id>', methods=["PUT"])
+def update_blog(id):
+  blog = Blogs.query.get(id)
+
+  title = request.json['title']
+  description = request.json['description']
+  blog_type = request.json['blog_type']
+  file_location = request.json['file_location']
+  file_blob = str.encode(request.json['file_blob'])
+  created_by_id = request.json['created_by']
+
+  blog.title = title
+  blog.description = description
+  blog.blog_type = blog_type
+  blog.file_location = file_location
+  blog.file_blob = file_blob
+  blog.created_by_id = created_by_id
+
+  db.session.commit()
+  return blog_schema.jsonify(blog)
+  
 
 if __name__ == '__main__':
     app.run(debug=True)
