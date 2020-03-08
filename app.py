@@ -71,6 +71,11 @@ def get_user(id):
   user = Users.query.get(id)
   return user_schema.jsonify(user)
 
+@app.route('/user/<id>', methods=["DELETE"])
+def delete_user(id):
+  user = Users.query.get(id)
+  return user_schema.jsonify(user)
+
 @app.route('/users', methods=["GET"])
 def get_users():
   all_users = Users.query.all()
