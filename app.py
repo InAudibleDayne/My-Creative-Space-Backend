@@ -156,7 +156,7 @@ def update_blog(id):
   db.session.commit()
   return blog_schema.jsonify(blog)
   
-@app.route('/blog/<id>', methods=["DELET"])
+@app.route('/blog/<id>', methods=["DELETE"])
 def delete_blog(id):
   blog = Blogs.query.get(id)
   db.session.delete(blog)
