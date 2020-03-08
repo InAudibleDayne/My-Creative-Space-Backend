@@ -86,7 +86,10 @@ def update_user(id):
 @app.route('/user/<id>', methods=["DELETE"])
 def delete_user(id):
   user = Users.query.get(id)
-  return user_schema.jsonify(user)
+  db.session.delete(user)
+  db.session.commit()
+
+  return "User has been deleted."
 
 @app.route('/users', methods=["GET"])
 def get_users():
@@ -153,6 +156,14 @@ def update_blog(id):
   db.session.commit()
   return blog_schema.jsonify(blog)
   
+@app.route('/blog/<id>', methods=["DELET"])
+def delete_blog(id):
+  blog = Blogs.query.get(id)
+  db.session.delete(blog)
+  db.session.commit()
+  
+  return "Blog item successfully deleted."
+
 
 if __name__ == '__main__':
     app.run(debug=True)
