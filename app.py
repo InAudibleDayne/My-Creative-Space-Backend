@@ -71,6 +71,18 @@ def get_user(id):
   user = Users.query.get(id)
   return user_schema.jsonify(user)
 
+@app.route('/user/<id>', methods=["PUT"])
+def update_user(id):
+  user = Users.query.get(id)
+  username = request.json['username']
+  passwordhash = request.json['passwordhash']
+
+  user.username = username
+  user.passwordhash = passwordhash
+
+  db.session.commit()
+  return user_schema.jsonify(user)
+
 @app.route('/user/<id>', methods=["DELETE"])
 def delete_user(id):
   user = Users.query.get(id)
