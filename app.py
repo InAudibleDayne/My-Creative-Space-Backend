@@ -130,6 +130,21 @@ def get_next_blogs(offset):
 
   return jsonify(result)
 
+@app.route('/blogs/sort/<category>', methods=["GET"])
+def get_blogs_by_category(category):
+  blogs = Blogs.query.filter_by(blog_type=f'{category}').order_by(Blogs.id.desc()).limit(10).all()
+  result = blogs_schema.dump(blogs)
+
+  return jsonify(result)
+
+@app.route('/blogs/sort/<category>/<offset>', methods=["GET"])
+def get_next_blogs_by_category(category, offset):
+  blogs = Blogs.query.filter_by(blog_type=f'{category}').order_by(Blogs.id.desc()).limit(10).offset(offset).all()
+  result = blogs_schema.dump(blogs)
+
+  return jsonify(result)
+
+
 @app.route('/blog/<id>', methods=["GET"])
 def get_blog(id):
   blog = Blogs.query.get(id)
