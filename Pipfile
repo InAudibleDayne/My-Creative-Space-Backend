@@ -12,6 +12,7 @@ sqlalchemy = "*"
 flask-sqlalchemy = "*"
 marshmallow = "*"
 flask-marshmallow = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.7"

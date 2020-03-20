@@ -1,11 +1,13 @@
 import mysql.connector
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from sqlalchemy import Column
 from sqlalchemy.dialects.mysql import SET, DATETIME
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://master:Pokemon.Master151@localhost:3306/my_creative_space?auth_plugin=mysql_native_password'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -15,15 +17,13 @@ ma = Marshmallow(app)
 class Users(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(45), unique=True)
-  passwordhash = db.Column(db.String(45), unique=False)
 
-  def __init__(self, username, passwordhash):
+  def __init__(self, username):
     self.username = username
-    self.passwordhash = passwordhash
 
 class UserSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'username', 'passwordhash')
+    fields = ('id', 'username')
 
 class Blogs(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -55,16 +55,22 @@ blogs_schema = BlogSchema(many=True)
 @app.route('/user', methods=["POST"])
 def add_user():
   username = request.json['username']
-  passwordhash = request.json['passwordhash']
 
-  new_user = Users(username, passwordhash)
+  existingcheck = Users.query.filter_by(username=username).all()
 
-  db.session.add(new_user)
-  db.session.commit()
+  if existingcheck == []:
+    new_user = Users(username)
 
-  user = Users.query.get(new_user.id)
+    db.session.add(new_user)
+    db.session.commit()
 
-  return user_schema.jsonify(user)
+    user = Users.query.get(new_user.id)
+
+    return user_schema.jsonify(user)
+
+  else:
+    result = users_schema.dump(existingcheck)
+    return jsonify(result)
 
 @app.route('/user/<id>', methods=["GET"])
 def get_user(id):
@@ -75,10 +81,8 @@ def get_user(id):
 def update_user(id):
   user = Users.query.get(id)
   username = request.json['username']
-  passwordhash = request.json['passwordhash']
 
   user.username = username
-  user.passwordhash = passwordhash
 
   db.session.commit()
   return user_schema.jsonify(user)
