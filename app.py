@@ -69,7 +69,8 @@ def add_user():
     return user_schema.jsonify(user)
 
   else:
-    result = users_schema.dump(existingcheck)
+    user = users_schema.dump(existingcheck)
+    result = user.pop()
     return jsonify(result)
 
 @app.route('/user/<id>', methods=["GET"])
