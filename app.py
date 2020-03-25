@@ -17,13 +17,15 @@ ma = Marshmallow(app)
 class Users(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(45), unique=True)
+  name = db.Column(db.String(45))
 
-  def __init__(self, username):
+  def __init__(self, username, name):
     self.username = username
+    self.name = name
 
 class UserSchema(ma.Schema):
   class Meta:
-    fields = ('id', 'username')
+    fields = ('id', 'username', 'name')
 
 class Blogs(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -55,11 +57,12 @@ blogs_schema = BlogSchema(many=True)
 @app.route('/user', methods=["POST"])
 def add_user():
   username = request.json['username']
+  name = request.json['name']
 
   existingcheck = Users.query.filter_by(username=username).all()
 
   if existingcheck == []:
-    new_user = Users(username)
+    new_user = Users(username, name)
 
     db.session.add(new_user)
     db.session.commit()
@@ -82,8 +85,10 @@ def get_user(id):
 def update_user(id):
   user = Users.query.get(id)
   username = request.json['username']
+  name = request.json['name']
 
   user.username = username
+  user.name = name
 
   db.session.commit()
   return user_schema.jsonify(user)
