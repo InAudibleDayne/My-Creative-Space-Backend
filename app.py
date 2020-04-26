@@ -212,6 +212,13 @@ def get_blogs_by_search_params(keywords, offset):
 
   return jsonify(result)
 
+@app.route('/blogs/usersearch/<id>/<keywords>/<offset>', methods=["GET"])
+def get_blogs_by_search_params_for_user(id, keywords, offset):
+  blogs = Blogs.query.filter_by(created_by_id=f'{id}').filter(Blogs.title.like("%" + keywords + "%")).order_by(Blogs.id.desc()).limit(10).offset(offset).all()
+  result = blogs_schema.dump(blogs)
+
+  return jsonify(result)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
