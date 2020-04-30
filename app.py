@@ -1,4 +1,5 @@
 import mysql.connector
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
@@ -226,4 +227,5 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+  port = int(os.environ.get("PORT", 5000))
+  app.run(host='us-cdbr-iron-east-01.cleardb.net/heroku_0583ed7cb2ba09f', port=port)
