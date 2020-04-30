@@ -200,7 +200,7 @@ def update_blog(id):
   
 @app.route('/blog/<id>', methods=["DELETE"])
 def delete_blog(id):
-  blog = Blogs.query.get(id)
+  blog = Blogs.query.get(f'{id}')
   db.session.delete(blog)
   db.session.commit()
   
