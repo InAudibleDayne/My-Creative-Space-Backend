@@ -228,4 +228,4 @@ def hello():
 
 if __name__ == '__main__':
   port = int(os.environ.get("PORT", 5000))
-  app.run(host='us-cdbr-iron-east-01.cleardb.net/heroku_0583ed7cb2ba09f', port=port)
+  app.run(host='0.0.0.0', port=port)
