@@ -144,28 +144,28 @@ def get_next_blogs(offset):
 
 @app.route('/blogs/user/<id>/<offset>', methods=["GET"])
 def get_blogs_by_user(id, offset):
-  blogs = Blogs.query.filter_by(created_by_id=f'{id}').order_by(Blogs.id.desc()).limit(10).offset(offset).all()
+  blogs = Blogs.query.filter_by(created_by_id=id).order_by(Blogs.id.desc()).limit(10).offset(offset).all()
   result = blogs_schema.dump(blogs)
 
   return jsonify(result)
 
 @app.route('/blogs/user/<id>/<category>/<offset>')
 def get_blogs_by_category_and_user(id, category, offset):
-  blogs = Blogs.query.filter_by(blog_type=f'{category}', created_by_id=f'{id}').order_by(Blogs.id.desc()).limit(10).offset(offset).all()
+  blogs = Blogs.query.filter_by(blog_type=category, created_by_id=id).order_by(Blogs.id.desc()).limit(10).offset(offset).all()
   result = blogs_schema.dump(blogs)
 
   return jsonify(result)
 
 @app.route('/blogs/sort/<category>', methods=["GET"])
 def get_blogs_by_category(category):
-  blogs = Blogs.query.filter_by(blog_type=f'{category}').order_by(Blogs.id.desc()).limit(10).all()
+  blogs = Blogs.query.filter_by(blog_type=category).order_by(Blogs.id.desc()).limit(10).all()
   result = blogs_schema.dump(blogs)
 
   return jsonify(result)
 
 @app.route('/blogs/sort/<category>/<offset>', methods=["GET"])
 def get_next_blogs_by_category(category, offset):
-  blogs = Blogs.query.filter_by(blog_type=f'{category}').order_by(Blogs.id.desc()).limit(10).offset(offset).all()
+  blogs = Blogs.query.filter_by(blog_type=category).order_by(Blogs.id.desc()).limit(10).offset(offset).all()
   result = blogs_schema.dump(blogs)
 
   return jsonify(result)
@@ -214,7 +214,7 @@ def get_blogs_by_search_params(keywords, offset):
 
 @app.route('/blogs/usersearch/<id>/<keywords>/<offset>', methods=["GET"])
 def get_blogs_by_search_params_for_user(id, keywords, offset):
-  blogs = Blogs.query.filter_by(created_by_id=f'{id}').filter(Blogs.title.like("%" + keywords + "%")).order_by(Blogs.id.desc()).limit(10).offset(offset).all()
+  blogs = Blogs.query.filter_by(created_by_id=id).filter(Blogs.title.like("%" + keywords + "%")).order_by(Blogs.id.desc()).limit(10).offset(offset).all()
   result = blogs_schema.dump(blogs)
 
   return jsonify(result)
