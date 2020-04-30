@@ -219,6 +219,10 @@ def get_blogs_by_search_params_for_user(id, keywords, offset):
 
   return jsonify(result)
 
+@app.route('/')
+def display():
+  return("Running")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
